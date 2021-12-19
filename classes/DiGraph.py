@@ -1,8 +1,8 @@
-from src.Interfaces.GraphInterface import GraphInterface
-from src.classes.node import Node
+from Interfaces.GraphInterface import GraphInterface
+from classes.node import Node
 
 
-class Graph(GraphInterface):
+class DiGraph(GraphInterface):
     """
     this class represent graph that have:
     * dictionary of nodes

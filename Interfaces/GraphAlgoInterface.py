@@ -1,6 +1,6 @@
 from typing import List
 
-from src.Interfaces import GraphInterface
+from Interfaces import GraphInterface
 
 
 class GraphAlgoInterface:
@@ -10,6 +10,7 @@ class GraphAlgoInterface:
         """
         :return: the directed graph on which the algorithm works on.
         """
+        raise NotImplementedError
 
     def load_from_json(self, file_name: str) -> bool:
         """
@@ -58,12 +59,15 @@ class GraphAlgoInterface:
         :param node_lst: A list of nodes id's
         :return: A list of the nodes id's in the path, and the overall distance
         """
+        raise NotImplementedError
 
     def centerPoint(self) -> (int, float):
         """
         Finds the node that has the shortest distance to it's farthest node.
         :return: The nodes id, min-maximum distance
         """
+
+        raise NotImplementedError
 
     def plot_graph(self) -> None:
         """
