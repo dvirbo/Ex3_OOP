@@ -1,9 +1,9 @@
 import json
 from typing import List
 
-from Interfaces import GraphInterface
-from Interfaces import GraphAlgoInterface
-from classes import DiGraph
+from Interfaces.GraphAlgoInterface import GraphAlgoInterface
+from Interfaces.GraphInterface import GraphInterface
+from classes.diGraph import DiGraph
 from classes.position import Position
 
 
@@ -92,3 +92,7 @@ class GraphAlgo(GraphAlgoInterface):
 
     def plot_graph(self) -> None:
         pass
+
+# if __name__ == '__main__':
+# g1 = GraphAlgo()
+# g1.load_from_json("data/A0.json")

@@ -1,4 +1,4 @@
-from classes import DiGraph
+from classes import diGraph
 from classes import GraphAlgo  # ??
 
 

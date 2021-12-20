@@ -1,7 +1,7 @@
 import math
 
 
-class Position(tuple):
+class Position(object):
     """
     this class represent a position point in 3D dimension
     """
@@ -13,6 +13,16 @@ class Position(tuple):
         self.x = pos[0]
         self.y = pos[1]
         self.z = pos[2]
+
+    def __eq__(self, other):
+        if other is None:
+            return 1
+        if not isinstance(other, Position):
+            return 1
+        if self.x == other.x and self.y == other.y and self.z == other.z:
+            return 0
+        else:
+            return 1
 
     def distance(self, dest):
         """
