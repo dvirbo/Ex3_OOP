@@ -20,3 +20,6 @@ class Position(tuple):
         :return: the distance between the two point
         """
         return math.sqrt(math.pow(self.x - dest.x, 2) + math.pow(self.y - dest.y) + math.pow(self.z - dest.z, 2))
+
+
+

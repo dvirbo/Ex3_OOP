@@ -74,6 +74,6 @@ class GraphAlgoInterface:
         Plots the graph.
         If the nodes have a position, the nodes will be placed there.
         Otherwise, they will be placed in a random but elegant manner.
-        @return: None
+        :return: None
         """
         raise NotImplementedError
