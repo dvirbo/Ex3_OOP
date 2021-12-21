@@ -2,6 +2,9 @@ import unittest
 import sys
 from classes.node import Node
 from classes.diGraph import DiGraph
+import sys
+
+from classes.graphAlgo import GraphAlgo
 
 
 class TestGraphAlgo(unittest.TestCase):
@@ -10,15 +13,15 @@ class TestGraphAlgo(unittest.TestCase):
         g1 = GraphAlgo()
         g1.load_from_json('data/A0.json')
         print(g1.graph.nodes.keys())
-
-    def test_shortest_path(self):
-        self.fail()
-
-    def test_tsp(self):
-        self.fail()
-
-    def test_center_point(self):
-        self.fail()
+    #
+    # def test_shortest_path(self):
+    #     self.fail()
+    #
+    # def test_tsp(self):
+    #     self.fail()
+    #
+    # def test_center_point(self):
+    #     self.fail()
 
 
 if __name__ == '__main__':
