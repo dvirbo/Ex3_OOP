@@ -1,10 +1,8 @@
 import json
 from typing import List
-
 from Interfaces.GraphAlgoInterface import GraphAlgoInterface
 from Interfaces.GraphInterface import GraphInterface
 from classes.diGraph import DiGraph
-from classes.position import Position
 
 
 class GraphAlgo(GraphAlgoInterface):
@@ -17,7 +15,7 @@ class GraphAlgo(GraphAlgoInterface):
         this method inits the graph -> creates a new graph
        :param graph: the new graph
        """
-        self.graph = DiGraph
+        self.graph = DiGraph()
         if graph is not None:
             self.graph = graph
 
@@ -35,16 +33,13 @@ class GraphAlgo(GraphAlgoInterface):
         """
         flag = True
         try:
-            with open(file_name) as f:
+            with open(file_name, 'r') as f:
                 data = json.load(f)
             for node in data["Nodes"]:
-                tmpPos = node["pos"]
-                p = str(tmpPos)
-                p = tuple(p.split(","))
-                pos = Position(p)
-                self.graph.add_node(node['id'], pos)
-            for edges in data["Edges"]:
-                self.graph.add_edge(edges["src"], edges["dest"], edges["w"])
+                jpos = tuple(map(float, str(node["pos"]).split(",")))
+                self.graph.add_node(node_id=node["id"], pos=jpos)
+            for edge in data["Edges"]:
+                self.graph.add_edge(id1=edge["src"], id2=edge["dest"], weight=edge["w"])
 
         except FileNotFoundError:
             flag = False
@@ -94,5 +89,3 @@ class GraphAlgo(GraphAlgoInterface):
         pass
 
 # if __name__ == '__main__':
-# g1 = GraphAlgo()
-# g1.load_from_json("data/A0.json")

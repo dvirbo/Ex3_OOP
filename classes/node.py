@@ -1,4 +1,4 @@
-from position import Position
+from classes.position import Position
 
 
 class Node(object):
@@ -31,9 +31,9 @@ class Node(object):
         self.tag = tag
 
     def __str__(self) -> str:
-        return f"id: {self.id}, pos: {self.pos}"
+        return f"id: {self.key}, pos: {self.pos}"
 
     def __repr__(self) -> str:
-        return f"id: {self.id}, pos: {self.pos}"
+        return f"id: {self.key}, pos: {self.pos}"
 
 
