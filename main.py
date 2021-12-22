@@ -1,5 +1,8 @@
-from classes import diGraph
-from classes import GraphAlgo  # ??
+import json
+from typing import List
+from Interfaces.GraphAlgoInterface import GraphAlgoInterface
+from Interfaces.GraphInterface import GraphInterface
+from classes.diGraph import DiGraph
 
 
 def check():

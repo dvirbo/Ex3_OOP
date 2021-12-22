@@ -147,3 +147,5 @@ class DiGraph(GraphInterface):
             return True
         return False
 
+    def __str__(self):
+        return "\n|V|={} , |E|={}".format(len(self.nodes), self.edgeCount)
