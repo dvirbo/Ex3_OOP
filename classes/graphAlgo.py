@@ -59,6 +59,8 @@ class GraphAlgo(GraphAlgoInterface):
             for fKey in self.graph.get_all_v().keys():
                 pos = str(self.graph.getNode(fKey).pos)
                 if pos is not None:
+                    pos = str(pos)
+                    pos = pos.replace("\'", "")
                     data["Nodes"].append({"pos": pos, "id": fKey})
                 else:
                     data["Nodes"].append({"id": fKey})
@@ -66,10 +68,12 @@ class GraphAlgo(GraphAlgoInterface):
                 weight = self.graph.all_out_edges_of_node(fKey).get(sKey)
                 data["Edges"].append({"src": fKey, "w": weight, "dest": sKey})
             finData = data.__str__()
-            finData.replace(" ", "")
-            finData.replace("'", "\"")
-            with open(file_name, "w") as f:
-                f.write(finData)
+            finData = finData.replace(" ", "")
+            finData = finData.replace("'", "\"")
+            finData = finData.replace("(", "")
+            finData = finData.replace(")", "")
+            with open(file_name, "w") as outfile:
+                outfile.write(finData)
         except FileNotFoundError:
             flag = False
             raise FileNotFoundError
