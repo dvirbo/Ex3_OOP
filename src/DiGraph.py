@@ -9,6 +9,10 @@ class DiGraph(GraphInterface):
         self.mcCount = 0
         self.edgeCount = 0
 
+    def set_graph(self, new_node: dict, edge_count: int):
+        self.nodes = new_node
+        self.edgeCount = edge_count
+
     def v_size(self):
         try:
             return len(self.nodes)

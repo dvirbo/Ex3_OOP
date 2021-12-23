@@ -2,6 +2,8 @@ import json
 import sys
 from typing import List
 
+from src.DiGraph import DiGraph
+from src.Edge import Edge
 from src.Interfaces.GraphAlgoInterface import GraphAlgoInterface
 from src.Interfaces.GraphInterface import GraphInterface
 from src.Node import Node
@@ -28,14 +30,27 @@ class GraphAlgo(GraphAlgoInterface):
                 """
         flag = True
         try:
-            with open(file_name, 'r') as f:
-                data = json.load(f)
-            for node in data["Nodes"]:
-                jpos = tuple(map(float, str(node["pos"]).split(",")))
-                self.graph.add_node(node_id=node["id"], pos=jpos)
-            for edge in data["Edges"]:
-                self.graph.add_edge(id1=edge["src"], id2=edge["dest"], weight=edge["w"])
+            with open(file_name, "r") as f:
+                new_Nodes = {}
+                counter = 0
+                my_dict = json.load(f)
+                list_Nodes = my_dict["Nodes"]
+                list_Edges = my_dict["Edges"]
+                for v in list_Nodes:
+                    position = v["pos"]
+                    id_num = v["id"]
+                    node = Node(id_num, position)
+                    new_Nodes[node.key] = node
 
+                for i in list_Edges:
+                    edge = Edge(src=i["src"], dest=i["dest"], weight=i["w"])
+                    new_Nodes[edge.src].add_out_edge(edge.dest, edge.weight)
+                    new_Nodes[edge.dest].add_in_edge(edge.src, edge.weight)
+                    counter += 1
+
+                new_graph = DiGraph()
+                new_graph.set_graph(new_Nodes, counter)
+                self.graph = new_graph
         except FileNotFoundError:
             flag = False
             raise FileNotFoundError
@@ -111,7 +126,7 @@ class GraphAlgo(GraphAlgoInterface):
                 # if there's an edge between src and dest then put the weight of the edge
                 elif nodes.get(id1).get_edge(current_key) is not None:
                     temp_path = [id1, current_key]
-                    src_distances[current_key] = [nodes.get(id1).get_edge(current_key).weight, temp_path]
+                    src_distances[current_key] = [nodes.get(id1).get_edge(current_key)[2], temp_path]
                 else:
                     src_distances[current_key] = [sys.float_info.max, None]
 
