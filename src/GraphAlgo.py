@@ -101,6 +101,7 @@ class GraphAlgo(GraphAlgoInterface):
         if id1 == id2:
             return float('inf'), []
 
+        # checking if self.distance has the answer
         if self.distances is not None \
                 and self.distances.get(id1) is not None \
                 and self.distances.get(id1).get(id2) is not None \
@@ -117,6 +118,7 @@ class GraphAlgo(GraphAlgoInterface):
             current_key = i
             nodes.get(i).set_tag(0)
 
+            # id1 is already define in src_distances (line 115)
             if current_key != id1:
                 if self.distances is not None \
                         and self.distances.get(id1) is not None \
@@ -126,7 +128,7 @@ class GraphAlgo(GraphAlgoInterface):
                 # if there's an edge between src and dest then put the weight of the edge
                 elif nodes.get(id1).get_edge(current_key) is not None:
                     temp_path = [id1, current_key]
-                    src_distances[current_key] = [nodes.get(id1).get_edge(current_key)[2], temp_path]
+                    src_distances[current_key] = [nodes.get(id1).get_edge(current_key).weight, temp_path]
                 else:
                     src_distances[current_key] = [sys.float_info.max, None]
 
@@ -148,7 +150,6 @@ class GraphAlgo(GraphAlgoInterface):
 
         :param nodes: dictionary of the graph's nodes
         :param src_distances: dictionary with the src distances to the other nodes in the graph
-        :param diGraph: this graph
         :return: the index of the node with the lowest distance to src node
         """
         answer = sys.float_info.max
@@ -170,7 +171,6 @@ class GraphAlgo(GraphAlgoInterface):
 
         :param index: current node to check
         :param src_distances: src_distances: dictionary with the src distances to the other nodes in the graph
-        :param diGraph: this graph
         :return: void, updating src_distances if theres a new lower distance
         """
         dist = src_distances[index][0]
@@ -181,11 +181,10 @@ class GraphAlgo(GraphAlgoInterface):
             new_dist = dist + edges[edge].weight
 
             if new_dist < src_distances[dest_node][0]:
-                src_distances[dest_node] = [new_dist, None]
-                temp_list = []
-                temp_list.insert(src_distances[index][1])
-                temp_list.append(dest_node)
-                src_distances[dest_node][1] = temp_list
+                temp_list = src_distances[index][1]
+
+                src_distances[dest_node] = [new_dist, [x for x in temp_list]]
+                src_distances[dest_node][1].append(dest_node)
 
     def TSP(self, node_lst: List[int]) -> (List[int], float):
         """
@@ -204,8 +203,7 @@ class GraphAlgo(GraphAlgoInterface):
         if node_size == 0:
             return None
         if node_size == 1:
-            # need updating!!!
-            return self.graph.get_all_v()
+            return self.graph.get_all_v().keys(), None
 
         min_value = sys.float_info.max
         answer = 0
@@ -218,7 +216,7 @@ class GraphAlgo(GraphAlgoInterface):
 
             for j in self.graph.get_all_v():
                 next_node = j
-
+                # checking if self.distances has the value
                 if self.distances is not None \
                         and self.distances.get(current_key) is not None \
                         and self.distances.get(current_key).get(next_node) is not None \
@@ -229,6 +227,7 @@ class GraphAlgo(GraphAlgoInterface):
                     temp_short = self.shortest_path(current_key, next_node)
                     temp_max = temp_short[0]
 
+                # getting the max value of the current node distances
                 if temp_max > max_value:
                     max_value = temp_max
             if max_value < min_value:

@@ -1,3 +1,4 @@
+from src.Edge import Edge
 from src.Interfaces.GraphInterface import GraphInterface
 from Node import Node
 
@@ -70,8 +71,8 @@ class DiGraph(GraphInterface):
             if (self.__contains__(id1)) & (self.__contains__(id2)):  # check if there in the dict nodes
                 if (id1 not in self.all_in_edges_of_node(id2).keys()) & (
                         id2 not in self.all_out_edges_of_node(id1).keys()):
-                    self.nodes[id1].outEdges[id2] = weight
-                    self.nodes[id2].inEdges[id1] = weight
+                    self.nodes[id1].outEdges[id2] = Edge(id1, id2, weight)
+                    self.nodes[id2].inEdges[id1] = Edge(id2, id1, weight)
                     self.mcCount += 1
                     self.edgeCount += 1
                     return True
