@@ -1,12 +1,17 @@
 import json
 import sys
+import matplotlib.pyplot as plt
 from typing import List
+from numpy import random
 
-from src.DiGraph import DiGraph
-from src.Edge import Edge
+from src.diGraph import DiGraph
+from src.edge import Edge
 from src.Interfaces.GraphAlgoInterface import GraphAlgoInterface
 from src.Interfaces.GraphInterface import GraphInterface
-from src.Node import Node
+from src.node import Node
+from src.position import Position
+
+min_x = min_y = max_x = max_y = 0
 
 
 class GraphAlgo(GraphAlgoInterface):
@@ -18,6 +23,7 @@ class GraphAlgo(GraphAlgoInterface):
 
         # distances = {id1, {id2, [float ,List]}}
         self.distances = {}
+        self.connected = -1
 
     def get_graph(self) -> GraphInterface:
         return self.graph
@@ -114,11 +120,10 @@ class GraphAlgo(GraphAlgoInterface):
         src_distances = {}
         src_distances[id1] = [0, None]
         nodes = self.graph.get_all_v()
-        for i in nodes:
-            current_key = i
-            nodes.get(i).set_tag(0)
+        for current_key in nodes:
+            nodes.get(current_key).set_tag(0)
 
-            # id1 is already define in src_distances (line 115)
+            # id1 is already define in src_distances (line 116)
             if current_key != id1:
                 if self.distances is not None \
                         and self.distances.get(id1) is not None \
@@ -136,13 +141,12 @@ class GraphAlgo(GraphAlgoInterface):
             # getting the node with the lowest distance from id1
             index = self.lowest_dist(src_distances, nodes)
             if index == -1:
-                return src_distances[id2]
+                return float('inf'), []
             else:
                 self.Dijkstra_algorithm_path(index, src_distances)
                 nodes.get(index).set_tag(1)
 
         self.distances[id1] = src_distances
-
         return src_distances[id2]
 
     def lowest_dist(self, src_distances: dict, nodes: dict) -> int:
@@ -150,10 +154,10 @@ class GraphAlgo(GraphAlgoInterface):
 
         :param nodes: dictionary of the graph's nodes
         :param src_distances: dictionary with the src distances to the other nodes in the graph
-        :return: the index of the node with the lowest distance to src node
+        :return: The index of the node with the lowest distance from src node
         """
-        answer = sys.float_info.max
-        index = -1
+        temp_dist = sys.float_info.max
+        ans = -1
 
         for i in src_distances:
             key = i
@@ -161,10 +165,10 @@ class GraphAlgo(GraphAlgoInterface):
 
             current_node = nodes.get(key)
             if current_node.tag == 0:
-                if value < answer:
-                    answer = value
-                    index = key
-        return index
+                if value < temp_dist:
+                    temp_dist = value
+                    ans = key
+        return ans
 
     def Dijkstra_algorithm_path(self, index: int, src_distances: dict) -> None:
         """
@@ -199,35 +203,44 @@ class GraphAlgo(GraphAlgoInterface):
         node_lst = list(dict.fromkeys(node_lst))
 
         pathAns = []
+
+        # path from nodeA to nodeB while nodeA is startNode and nodeB is the node with the lowest distance from nodeA
         tempPath = []
         cost = sys.float_info.max
 
         startNode = node_lst.pop(0)
         currentNode = 0
         pathAns.append(startNode)
-        dist_ans = 0
-        while node_lst:
-            startNodeKey = startNode
 
-            for i in node_lst:
-                next_node_key = i
+        # dist_ans -> overall distance
+        dist_ans = 0
+
+        # while node_lst is not empty
+        while node_lst:
+
+            # looking for the node with the lowest distance path from startNode
+            for next_node_key in node_lst:
                 if self.distances is not None \
-                        and self.distances.get(startNodeKey) is not None \
-                        and self.distances.get(startNodeKey).get(next_node_key) is not None \
-                        and self.distances.get(startNodeKey).get(next_node_key)[0] is not None \
-                        and self.distances.get(startNodeKey).get(next_node_key)[0] != sys.float_info.max \
-                        and self.distances.get(startNodeKey).get(next_node_key)[1] is not None:
-                    tempSPD = self.distances.get(startNodeKey).get(next_node_key)[0]
+                        and self.distances.get(startNode) is not None \
+                        and self.distances.get(startNode).get(next_node_key) is not None \
+                        and self.distances.get(startNode).get(next_node_key)[0] is not None \
+                        and self.distances.get(startNode).get(next_node_key)[0] != sys.float_info.max \
+                        and self.distances.get(startNode).get(next_node_key)[1] is not None:
+                    tempSPD = self.distances.get(startNode).get(next_node_key)[0]
 
                 else:
-                    tempSPD = self.shortest_path(startNodeKey, next_node_key)[0]
+                    tempSPD = self.shortest_path(startNode, next_node_key)[0]
 
                 if tempSPD < cost:
                     cost = tempSPD
-                    tempPath = self.distances.get(startNodeKey).get(next_node_key)[1]
-                    dist_ans += self.distances.get(startNodeKey).get(next_node_key)[0]
-                    tempPath.remove(startNodeKey)
-                    currentNode = i
+                    tempPath = self.distances.get(startNode).get(next_node_key)[1]
+                    dist_ans += self.distances.get(startNode).get(next_node_key)[0]
+                    tempPath.remove(startNode)
+                    currentNode = next_node_key
+
+            #  if there's no path
+            if not tempPath:
+                return -1, float('inf')
 
             cost = sys.float_info.max
             index = node_lst.index(currentNode)
@@ -251,13 +264,16 @@ class GraphAlgo(GraphAlgoInterface):
             return None
         if node_size == 1:
             return self.graph.get_all_v().keys(), None
+        if self.connected == -1:
+            if not self.is_connected:
+                return -1, float('inf')
+        elif self.connected == 0:
+            return -1, float('inf')
 
         min_value = sys.float_info.max
         answer = 0
 
-        for i in self.graph.get_all_v():
-            current_key = i
-
+        for current_key in self.graph.get_all_v():
             temp_max = 0
             max_value = sys.float_info.min
 
@@ -283,14 +299,86 @@ class GraphAlgo(GraphAlgoInterface):
 
         return answer, min_value
 
+    @property
+    def is_connected(self) -> bool:
+        """
+
+        :return: Returns True if and only if (iff) there is a valid path from each node to each other node.
+        """
+        edges = self.graph.e_size()
+        nodes = self.graph.v_size()
+
+        #  a connected graph with n vertex must have at list n-1 edges
+        if edges < nodes - 1:
+            self.connected = 0
+            return False
+
+        self.DFS(self.graph.get_all_v().get(0))
+
+        for i in self.graph.get_all_v():
+            node = self.graph.get_all_v().get(i)
+            # if there's a node in the graph that DFS didn't reach to then the graph is not connected
+            if node.tag == 0:
+                self.connected = 0
+                return False
+
+        self.connected = 1
+        return True
+
+    def DFS(self, n: Node):
+        """
+
+        :param n: current node to check path to other nodes
+        :return: void, setting node's tag to 1 when reached to
+        """
+        n.set_tag(1)
+
+        for i in self.graph.all_out_edges_of_node(n.key):
+            nd = self.graph.get_all_v().get(i)
+            if nd.tag == 0:
+                self.DFS(nd)
+
+        n.set_tag(2)
+
     def plot_graph(self) -> None:
         """
-            Plots the graph.
-            If the nodes have a position, the nodes will be placed there.
-            Otherwise, they will be placed in a random but elegant manner.
-            @return: None
-            """
-        raise NotImplementedError
+        Plots the graph.
+        If the nodes have a position, the nodes will be placed there.
+        Otherwise, they will be placed in a random but elegant manner.
+        :return: None
+        """
+        gp = self.get_graph()
+        plt.xlabel("X")
+        plt.ylabel("-<")
+        for src, node in gp.get_all_v().items():
+            if node.pos is None:
+                x = random.uniform(0.0, 100)
+                y = random.uniform(0.0, 100)
+                p = (x, y, 0)
+                node.pos = Position(p)
+            plt.plot(node.pos.x, node.pos.y, marker='o', color='yellow', markerfacecolor='b', markersize=3)
+            plt.text(node.pos.x, node.pos.y, str(node.key))
+
+            for dest in gp.all_out_edges_of_node(src).keys():
+                x1 = gp.get_all_v()[src].pos.x
+                y1 = gp.get_all_v()[src].pos.y
+                if gp.get_all_v()[dest].pos is None:
+                    x = random.uniform(0.0, 100)
+                    y = random.uniform(0.0, 100)
+                    p = (x, y, 0)
+                    gp.get_all_v()[dest].pos = Position(p)
+                x2 = gp.get_all_v()[dest].pos.x
+                y2 = gp.get_all_v()[dest].pos.y
+                plt.arrow(x1, y1, x2 - x1, y2 - y1, width=0.00001, linewidth=0.05)
+        plt.title("Graph:" + gp.__str__())
+        # plt.legend()
+        plt.show()  # make graphics appear.
+
+    # def __str__(self) -> str:
+    #     return "\n|V|={} , |E|={}".format(len(self.get_graph().get_all_v()), self.graph.edgeCount)
+    #
+    # def __repr__(self) -> str:
+    #     return self.graph.__repr__()
 
 
 if __name__ == '__main__':
@@ -300,3 +388,4 @@ if __name__ == '__main__':
     print(g.centerPoint())
     listi = [1, 5, 2, 2, 8, 7, 8]
     print(g.TSP(listi))
+    print(g.is_connected)

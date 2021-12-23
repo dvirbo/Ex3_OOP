@@ -1,4 +1,4 @@
-from src.Edge import Edge
+from src.edge import Edge
 from src.position import Position
 
 
