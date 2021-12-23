@@ -43,7 +43,10 @@ class GraphAlgo(GraphAlgoInterface):
                 list_Nodes = my_dict["Nodes"]
                 list_Edges = my_dict["Edges"]
                 for v in list_Nodes:
-                    position = v["pos"]
+                    if len(v) == 1:
+                        position = None
+                    else:
+                        position = v["pos"]
                     id_num = v["id"]
                     node = Node(id_num, position)
                     new_Nodes[node.key] = node
@@ -186,7 +189,6 @@ class GraphAlgo(GraphAlgoInterface):
 
             if new_dist < src_distances[dest_node][0]:
                 temp_list = src_distances[index][1]
-
                 src_distances[dest_node] = [new_dist, [x for x in temp_list]]
                 src_distances[dest_node][1].append(dest_node)
 
@@ -299,7 +301,6 @@ class GraphAlgo(GraphAlgoInterface):
 
         return answer, min_value
 
-    @property
     def is_connected(self) -> bool:
         """
 
@@ -383,9 +384,10 @@ class GraphAlgo(GraphAlgoInterface):
 
 if __name__ == '__main__':
     g = GraphAlgo()
-    g.load_from_json("C:/Users/yuval/PycharmProjects/Ex3_OOP/data/A0.json")
+    g.load_from_json("C:/Users/yuval/PycharmProjects/Ex3_OOP/data/T0.json")
     print(g.shortest_path(0, 1))
     print(g.centerPoint())
     listi = [1, 5, 2, 2, 8, 7, 8]
-    print(g.TSP(listi))
     print(g.is_connected)
+    print(g.TSP(listi))
+
