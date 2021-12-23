@@ -2,10 +2,8 @@ import json
 import sys
 from typing import List
 
-from src.Edge import Edge
-from src.DiGraph import DiGraph
-from src.GraphAlgoInterface import GraphAlgoInterface
-from src.GraphInterface import GraphInterface
+from src.Interfaces.GraphAlgoInterface import GraphAlgoInterface
+from src.Interfaces.GraphInterface import GraphInterface
 from src.Node import Node
 
 
@@ -23,36 +21,60 @@ class GraphAlgo(GraphAlgoInterface):
         return self.graph
 
     def load_from_json(self, file_name: str) -> bool:
+        """
+                 Loads a graph from a json file.
+                :param file_name: The path to the json file
+                :return True if the loading was successful, False o.w.
+                """
+        flag = True
         try:
-            with open(file_name, "r") as f:
-                new_Nodes = {}
-                my_dict = json.load(f)
-                list_Nodes = my_dict["Nodes"]
-                list_Edges = my_dict["Edges"]
-                counter = 0
-                for v in list_Nodes:
-                    node = Node(id_num=v["id"], position=v["pos"])
-                    new_Nodes[node.id] = node
+            with open(file_name, 'r') as f:
+                data = json.load(f)
+            for node in data["Nodes"]:
+                jpos = tuple(map(float, str(node["pos"]).split(",")))
+                self.graph.add_node(node_id=node["id"], pos=jpos)
+            for edge in data["Edges"]:
+                self.graph.add_edge(id1=edge["src"], id2=edge["dest"], weight=edge["w"])
 
-                for i in list_Edges:
-                    edge = Edge(src=i["src"], dest=i["dest"], weight=i["w"])
-                    new_Nodes[edge.src].outEdges[edge.dest] = edge
-                    new_Nodes[edge.dest].inEdges[edge.src] = edge
-                    counter += 1
-                new_graph = DiGraph(new_Nodes)
-                new_graph.edgeCount = counter
-                self.graph = new_graph
-                return True
-        except IOError as e:
-            print(e)
+        except FileNotFoundError:
+            flag = False
+            raise FileNotFoundError
+        finally:
+            return flag
 
     def save_to_json(self, file_name: str) -> bool:
+        """
+                Saves the graph in JSON format to a file
+                :param file_name: The path to the out file
+                :return: True if the save was successful, False o.w.
+                """
+        flag = True
+        data = {"Edges": [], "Nodes": []}
         try:
-            with open(file_name, 'w') as outfile:
-                json.dump(self.graph, outfile)
-            return True
-        except IOError as e:
-            print(e)
+            nodes = self.graph.get_all_v()
+            for fKey in nodes.keys():
+                pos = str(nodes.get(fKey).pos)
+                if pos is not None:
+                    pos = str(pos)
+                    pos = pos.replace("\'", "")
+                    data["Nodes"].append({"pos": pos, "id": fKey})
+                else:
+                    data["Nodes"].append({"id": fKey})
+                for sKey in self.graph.all_out_edges_of_node(fKey):
+                    weight = self.graph.all_out_edges_of_node(fKey).get(sKey)
+                    data["Edges"].append({"src": fKey, "w": weight, "dest": sKey})
+            finData = data.__str__()
+            finData = finData.replace(" ", "")
+            finData = finData.replace("'", "\"")
+            finData = finData.replace("(", "")
+            finData = finData.replace(")", "")
+            with open(file_name, "w") as outfile:
+                outfile.write(finData)
+        except FileNotFoundError:
+            flag = False
+            raise FileNotFoundError
+        finally:
+            return flag
 
     def shortest_path(self, id1: int, id2: int) -> (float, list):
         """
@@ -72,13 +94,13 @@ class GraphAlgo(GraphAlgoInterface):
                 and self.distances.get(id1).get(id2)[1] is not None:
             return self.distances.get(id1).get(id2)
 
-        diGraph = DiGraph(self.graph.get_all_v())
-
+        # src_distances a dict of id1 distances and path to the graph's nodes
         src_distances = {}
         src_distances[id1] = [0, None]
-        for i in self.graph.get_all_v():
+        nodes = self.graph.get_all_v()
+        for i in nodes:
             current_key = i
-            diGraph.getNode(i).set_tag(0)
+            nodes.get(i).set_tag(0)
 
             if current_key != id1:
                 if self.distances is not None \
@@ -87,28 +109,29 @@ class GraphAlgo(GraphAlgoInterface):
                     src_distances[current_key] = self.distances.get(id1).get(current_key)
 
                 # if there's an edge between src and dest then put the weight of the edge
-                elif diGraph.get_edge(id1, current_key) is not None:
+                elif nodes.get(id1).get_edge(current_key) is not None:
                     temp_path = [id1, current_key]
-                    src_distances[current_key] = [diGraph.get_edge(id1, current_key).weight, temp_path]
+                    src_distances[current_key] = [nodes.get(id1).get_edge(current_key).weight, temp_path]
                 else:
                     src_distances[current_key] = [sys.float_info.max, None]
 
-        while diGraph.getNode(id2).tag != 1:
+        while nodes.get(id2).tag != 1:
             # getting the node with the lowest distance from id1
-            index = self.lowest_dist(src_distances, diGraph)
+            index = self.lowest_dist(src_distances, nodes)
             if index == -1:
                 return src_distances[id2]
             else:
-                self.Dijkstra_algorithm_path(index, src_distances, diGraph)
-                diGraph.getNode(index).set_tag(1)
+                self.Dijkstra_algorithm_path(index, src_distances)
+                nodes.get(index).set_tag(1)
 
         self.distances[id1] = src_distances
 
         return src_distances[id2]
 
-    def lowest_dist(self, src_distances: dict, diGraph: DiGraph) -> int:
+    def lowest_dist(self, src_distances: dict, nodes: dict) -> int:
         """
 
+        :param nodes: dictionary of the graph's nodes
         :param src_distances: dictionary with the src distances to the other nodes in the graph
         :param diGraph: this graph
         :return: the index of the node with the lowest distance to src node
@@ -120,15 +143,14 @@ class GraphAlgo(GraphAlgoInterface):
             key = i
             value = src_distances[key][0]
 
-            current_node = diGraph.getNode(key)
-            current_tag = current_node.tag
-            if current_tag == 0:
+            current_node = nodes.get(key)
+            if current_node.tag == 0:
                 if value < answer:
                     answer = value
                     index = key
         return index
 
-    def Dijkstra_algorithm_path(self, index: int, src_distances: dict, diGraph: DiGraph) -> None:
+    def Dijkstra_algorithm_path(self, index: int, src_distances: dict) -> None:
         """
 
         :param index: current node to check
@@ -137,7 +159,7 @@ class GraphAlgo(GraphAlgoInterface):
         :return: void, updating src_distances if theres a new lower distance
         """
         dist = src_distances[index][0]
-        edges = diGraph.all_out_edges_of_node(index)
+        edges = self.graph.all_out_edges_of_node(index)
 
         for edge in edges:
             dest_node = edges[edge].dest
@@ -145,9 +167,10 @@ class GraphAlgo(GraphAlgoInterface):
 
             if new_dist < src_distances[dest_node][0]:
                 src_distances[dest_node] = [new_dist, None]
-                src_distances.get(dest_node)[1] = src_distances.get(index)[1]
-                src_distances.get(dest_node)[1].append(dest_node)
-                src_distances.get(index)[1].remove(dest_node)
+                temp_list = []
+                temp_list.insert(src_distances[index][1])
+                temp_list.append(dest_node)
+                src_distances[dest_node][1] = temp_list
 
     def TSP(self, node_lst: List[int]) -> (List[int], float):
         """
@@ -162,9 +185,11 @@ class GraphAlgo(GraphAlgoInterface):
             :return: The nodes id, min-maximum distance
             """
 
-        if self.graph.v_size() == 0:
+        node_size = self.graph.v_size()
+        if node_size == 0:
             return None
-        if self.graph.v_size() == 1:
+        if node_size == 1:
+            # need updating!!!
             return self.graph.get_all_v()
 
         min_value = sys.float_info.max
@@ -210,6 +235,5 @@ class GraphAlgo(GraphAlgoInterface):
 if __name__ == '__main__':
     g = GraphAlgo()
     g.load_from_json("C:/Users/yuval/PycharmProjects/Ex3_OOP/data/A0.json")
-    print(g.graph.e_size())
     print(g.shortest_path(0, 1))
     print(g.centerPoint())

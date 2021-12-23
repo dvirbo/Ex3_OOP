@@ -1,11 +1,11 @@
-from GraphInterface import GraphInterface
+from src.Interfaces.GraphInterface import GraphInterface
 from Node import Node
 
 
 class DiGraph(GraphInterface):
 
-    def __init__(self, nodes: dict):
-        self.nodes = nodes
+    def __init__(self):
+        self.nodes = {}
         self.mcCount = 0
         self.edgeCount = 0
 
@@ -26,6 +26,9 @@ class DiGraph(GraphInterface):
             return self.nodes
         except NotImplementedError as e:
             print(e)
+
+    def set_all_v(self, nodes: dict):
+        self.nodes = nodes
 
     def all_in_edges_of_node(self, id1: int) -> dict:
         try:
@@ -134,6 +137,6 @@ class DiGraph(GraphInterface):
 
     def get_edge(self, id1: int, id2: int):
         try:
-            return self.nodes[id1].get_edge(id2)
+            return self.getNode(id1).get_edge(id2)
         except KeyError:
             return None

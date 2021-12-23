@@ -1,5 +1,7 @@
-class Node:
+from src.position import Position
 
+
+class Node:
     id = None
     tag = 0
     weight = None
@@ -12,12 +14,15 @@ class Node:
         :param id_num: uniq key of the node
         :param position: geo position
         """
-        self.id = id_num
+        self.key = id_num
         self.tag = 0
         self.weight = None
         self.inEdges = {}
         self.outEdges = {}
-        self.pos = position
+        if position is not None:
+            self.pos = Position(position)
+        else:
+            self.pos = position
 
     def get_key(self) -> int:
         return self.id
