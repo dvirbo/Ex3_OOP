@@ -192,6 +192,53 @@ class GraphAlgo(GraphAlgoInterface):
             :param node_lst: A list of nodes id's
             :return: A list of the nodes id's in the path, and the overall distance
             """
+        if not len(node_lst):
+            pass
+
+        #  removing duplicates
+        node_lst = list(dict.fromkeys(node_lst))
+
+        pathAns = []
+        tempPath = []
+        cost = sys.float_info.max
+
+        startNode = node_lst.pop(0)
+        currentNode = 0
+        pathAns.append(startNode)
+        dist_ans = 0
+        while node_lst:
+            startNodeKey = startNode
+
+            for i in node_lst:
+                next_node_key = i
+                if self.distances is not None \
+                        and self.distances.get(startNodeKey) is not None \
+                        and self.distances.get(startNodeKey).get(next_node_key) is not None \
+                        and self.distances.get(startNodeKey).get(next_node_key)[0] is not None \
+                        and self.distances.get(startNodeKey).get(next_node_key)[0] != sys.float_info.max \
+                        and self.distances.get(startNodeKey).get(next_node_key)[1] is not None:
+                    tempSPD = self.distances.get(startNodeKey).get(next_node_key)[0]
+
+                else:
+                    tempSPD = self.shortest_path(startNodeKey, next_node_key)[0]
+
+                if tempSPD < cost:
+                    cost = tempSPD
+                    tempPath = self.distances.get(startNodeKey).get(next_node_key)[1]
+                    dist_ans += self.distances.get(startNodeKey).get(next_node_key)[0]
+                    tempPath.remove(startNodeKey)
+                    currentNode = i
+
+            cost = sys.float_info.max
+            index = node_lst.index(currentNode)
+            startNode = node_lst[index]
+
+            for i in tempPath:
+                pathAns.append(i)
+                if i in node_lst:
+                    node_lst.remove(i)
+
+        return pathAns, dist_ans
 
     def centerPoint(self) -> (int, float):
         """
@@ -251,3 +298,5 @@ if __name__ == '__main__':
     g.load_from_json("C:/Users/yuval/PycharmProjects/Ex3_OOP/data/A0.json")
     print(g.shortest_path(0, 1))
     print(g.centerPoint())
+    listi = [1, 5, 2, 2, 8, 7, 8]
+    print(g.TSP(listi))
