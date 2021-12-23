@@ -7,6 +7,8 @@ from numpy import random
 from Interfaces.GraphAlgoInterface import GraphAlgoInterface
 from Interfaces.GraphInterface import GraphInterface
 from classes.diGraph import DiGraph
+from classes.edge import Edge
+from classes.node import Node
 from classes.position import Position
 
 min_x = min_y = max_x = max_y = 0
@@ -104,13 +106,14 @@ class GraphAlgo(GraphAlgoInterface):
         Otherwise, they will be placed in a random but elegant manner.
         :return: None
         """
-
         g = self.get_graph()
         plt.xlabel("X")
         plt.ylabel("-<")
         for src, node in g.get_all_v().items():
-            if node.pos is None:  # call a func that generate the node rand pos
-                p = self.randPos()
+            if node.pos is None:
+                x = random.uniform(0.0, 100)
+                y = random.uniform(0.0, 100)
+                p = (x, y, 0)
                 node.pos = Position(p)
             plt.plot(node.pos.x, node.pos.y, marker='o', color='yellow', markerfacecolor='b', markersize=3)
             plt.text(node.pos.x, node.pos.y, str(node.key))
@@ -119,53 +122,16 @@ class GraphAlgo(GraphAlgoInterface):
                 x1 = g.get_all_v()[src].pos.x
                 y1 = g.get_all_v()[src].pos.y
                 if g.get_all_v()[dest].pos is None:
-                    p = self.randPos()
+                    x = random.uniform(0.0, 100)
+                    y = random.uniform(0.0, 100)
+                    p = (x, y, 0)
                     g.get_all_v()[dest].pos = Position(p)
                 x2 = g.get_all_v()[dest].pos.x
                 y2 = g.get_all_v()[dest].pos.y
                 plt.arrow(x1, y1, x2 - x1, y2 - y1, width=0.00001, linewidth=0.05)
         plt.title("Graph:" + g.__str__())
-        plt.legend()
+        # plt.legend()
         plt.show()  # make graphics appear.
-
-    def randPos(self):
-        """
-        this function generate random position for nods without position
-        """
-        self.min_max()
-        if min_x == min_y == max_x == max_y == 0:  # didn't change:
-            x = random.uniform(32, 33)
-            y = random.uniform(35, 36)
-            z = 0
-            ans = x, y, z
-            return ans
-        count = 0
-        for node in self.graph.get_all_v().values():
-            if node.pos is not None:
-                count += 1
-        x = random.uniform(max_x, min_x)
-        y = random.uniform(max_y, min_y)
-        z = 0
-        if count == 0:  # if all the nodes without pos:
-            x = random.uniform(32, 33)
-            y = random.uniform(35, 36)
-            z = 0
-            ans = x, y, z
-        else:
-            ans = x, y, z
-        return ans
-
-    """
-    get the scaled data with proportions min_data, max_data
-    relative to min and max screen dimensions
-    """
-
-    def min_max(self):
-        global min_x, min_y, max_x, max_y
-        min_x = min(list(self.get_graph().get_all_v().values()), key=lambda n: n.pos[0]).pos[0]
-        min_y = min(list(self.get_graph().get_all_v().values()), key=lambda n: n.pos[1]).pos[1]
-        max_x = max(list(self.get_graph().get_all_v().values()), key=lambda n: n.pos[0]).pos[0]
-        max_y = max(list(self.get_graph().get_all_v().values()), key=lambda n: n.pos[1]).pos[1]
 
     def __str__(self) -> str:
         return "\n|V|={} , |E|={}".format(len(self.get_graph().get_all_v()), self.graph.edgeCount)
@@ -174,5 +140,4 @@ class GraphAlgo(GraphAlgoInterface):
         return self.graph.__repr__()
 
 
-if __name__ == '__main__':
-    g1 = DiGraph()
+
