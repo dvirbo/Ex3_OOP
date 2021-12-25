@@ -52,11 +52,11 @@ class GraphAlgo(GraphAlgoInterface):
                 list_Edges = my_dict["Edges"]
                 for v in list_Nodes:
                     if len(v) == 1:
-                        position = None
+                        jpos = None
                     else:
-                        position = v["pos"]
+                        jpos = tuple(map(float, str(v["pos"]).split(",")))
                     id_num = v["id"]
-                    node = Node(id_num, position)
+                    node = Node(id_num, jpos)
                     new_Nodes[node.key] = node
 
                 for i in list_Edges:
@@ -67,7 +67,7 @@ class GraphAlgo(GraphAlgoInterface):
 
                 new_graph = DiGraph()
                 new_graph.set_graph(new_Nodes, counter)
-                self._init_(new_graph)
+                self.__init__(new_graph)
         except FileNotFoundError:
             flag = False
             raise FileNotFoundError
@@ -90,10 +90,13 @@ class GraphAlgo(GraphAlgoInterface):
                 else:
                     data["Nodes"].append({"id": fKey})
                 for sKey in self.graph.all_out_edges_of_node(fKey):
-                    w = self.graph.all_out_edges_of_node(fKey).get(sKey)
-                    w = str(w)
-                    weight = w[-3:]
-                    data["Edges"].append({"src": fKey, "w": weight, "dest": sKey})
+                    w1 = self.graph.all_out_edges_of_node(fKey).get(sKey)
+                    w1 = str(w1)
+                    var = w1.split("w", 1)[1]
+                    var = var.replace(" ", "")
+                    var = var.replace("'", "")
+                    var = var.replace(":", "")
+                    data["Edges"].append({"src": fKey, "w": var, "dest": sKey})
                 finData = data.__str__()
                 # finData = finData.replace(" ", "")
                 finData = finData.replace("'", "\"")
@@ -362,7 +365,9 @@ class GraphAlgo(GraphAlgoInterface):
                 y = random.uniform(0.0, 100)
                 p = (x, y, 0)
                 node.pos = Position(p)
-            plt.plot(node.pos.x, node.pos.y, marker='o', color='yellow', markerfacecolor='b', markersize=3)
+                # color='r', linewidth=2.0, marker='D', alpha=0.5
+                # marker='o', color='r', markerfacecolor='b', markersize=1
+            plt.plot(node.pos.x, node.pos.y, marker='o', color='r', markerfacecolor='b', markersize=1)
             plt.text(node.pos.x, node.pos.y, str(node.key))
 
             for dest in gp.all_out_edges_of_node(src).keys():
@@ -375,23 +380,16 @@ class GraphAlgo(GraphAlgoInterface):
                     gp.get_all_v()[dest].pos = Position(p)
                 x2 = gp.get_all_v()[dest].pos.x
                 y2 = gp.get_all_v()[dest].pos.y
-                plt.arrow(x1, y1, x2 - x1, y2 - y1, width=0.00001, linewidth=0.05)
+                plt.arrow(x1, y1, x2 - x1, y2 - y1, width=0.0001, linewidth=0.05)
         plt.title("Graph:" + gp.__str__())
         # plt.legend()
         plt.show()  # make graphics appear.
 
-    # def __str__(self) -> str:
-    #     return "\n|V|={} , |E|={}".format(len(self.get_graph().get_all_v()), self.graph.edgeCount)
-    #
-    # def __repr__(self) -> str:
-    #     return self.graph.__repr__()
+    def __str__(self) -> str:
+        return "\n|V|={} , |E|={}".format(len(self.get_graph().get_all_v()), self.graph.edgeCount)
+
+    def __repr__(self) -> str:
+        return self.graph.__repr__()
 
 
-if __name__ == '__main__':
-    g = GraphAlgo()
-    g.load_from_json("C:/Users/yuval/PycharmProjects/Ex3_OOP/data/A0.json")
-    print(g.shortest_path(0, 1))
-    print(g.centerPoint())
-    listi = [1, 2, 3]
-    print(g.is_connected)
-    print(g.TSP(listi))
+

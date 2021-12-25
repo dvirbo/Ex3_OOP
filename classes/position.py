@@ -14,21 +14,8 @@ class Position(tuple):
         self.y = pos[1]
         self.z = pos[2]
 
-    def __eq__(self, other):
-        if other is None:
-            return 1
-        if not isinstance(other, Position):
-            return 1
-        if self.x == other.x and self.y == other.y and self.z == other.z:
-            return 0
-        else:
-            return 1
+    def __repr__(self):
+        return f"{self.x}, {self.y}, {self.z}"
 
-    def distance(self, dest):
-        """
-        :param dest: pos of the dist point
-        :return: the distance between the two point
-        """
-        return math.sqrt(math.pow(self.x - dest.x, 2) + math.pow(self.y - dest.y) + math.pow(self.z - dest.z, 2))
-
-
+    def __str__(self):
+        return f"{self.x}, {self.y}, {self.z}"

@@ -1,10 +1,8 @@
 import unittest
 import sys
-from classes.node import Node
-from classes.diGraph import DiGraph
-import sys
 
-from classes.graphAlgo import GraphAlgo
+
+from classes.GraphAlgo import GraphAlgo
 
 
 class TestGraphAlgo(unittest.TestCase):
