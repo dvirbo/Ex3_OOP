@@ -46,6 +46,7 @@ To run tests, run the following command
 
 
 ## Doces:
+* information and auxiliary departments for this task can be found at this link: https://github.com/benmoshe/OOP_2021/tree/main/Assignments/Ex3
 * intro to matplotlib: https://colab.research.google.com/github/makeabilitylab/signals/blob/master/Tutorials/IntroToMatplotlib.ipynb#scrollTo=MzNLMwO6dhl7 
 
  
