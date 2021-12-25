@@ -9,7 +9,7 @@ The theme of the project is  Design and implementation of directed and weighted 
 - [@dvir borochov](https://github.com/dvirbo)
 - [@yuval shabat](https://github.com/yuvili)
 ## Main algorithm's
-   methods of the interface:
+ methods of the interface:
 - create a graph (it's optional to add vertexes and edges)
 - init: Init the graph on which this set of algorithms operates on
 - copy: Compute a deep copy of a weighted graph.
@@ -21,7 +21,7 @@ The theme of the project is  Design and implementation of directed and weighted 
 - load: load a graph from a JSON format.
 - plot_graph: Plots the graph.
 
-  algorithms that we buit to help us implements the methods of the intreface:
+ algorithms that we buit to help us implements the methods of the intreface:
  - lowest_dist: calculate the lowest dist between two given nodes.
  - Dijkstra_algorithm_path: Find the shortest route for any pair node,
  - is_connected:check if the given grapg is strongly connected
