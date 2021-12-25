@@ -4,12 +4,12 @@ import matplotlib.pyplot as plt
 from typing import List
 from numpy import random
 
-from src.diGraph import DiGraph
-from src.edge import Edge
+from classes.diGraph import DiGraph
+from classes.edge import Edge
 from src.Interfaces.GraphAlgoInterface import GraphAlgoInterface
 from src.Interfaces.GraphInterface import GraphInterface
-from src.node import Node
-from src.position import Position
+from classes.node import Node
+from classes.position import Position
 
 min_x = min_y = max_x = max_y = 0
 
@@ -19,7 +19,7 @@ class GraphAlgo(GraphAlgoInterface):
     distances = None
     connected = -1
 
-    def _init_(self, directedGraph: DiGraph() = None) -> None:
+    def __init__(self, directedGraph: DiGraph() = None) -> None:
         """
         this method inits the graph -> creates a new graph
        :param directedGraph: the new graph
@@ -67,7 +67,7 @@ class GraphAlgo(GraphAlgoInterface):
 
                 new_graph = DiGraph()
                 new_graph.set_graph(new_Nodes, counter)
-                self._init_(new_graph)
+                self.graph = new_graph
         except FileNotFoundError:
             flag = False
             raise FileNotFoundError
@@ -94,7 +94,7 @@ class GraphAlgo(GraphAlgoInterface):
                     w = str(w)
                     weight = w[-3:]
                     data["Edges"].append({"src": fKey, "w": weight, "dest": sKey})
-                finData = data._str_()
+                finData = data.__str__()
                 # finData = finData.replace(" ", "")
                 finData = finData.replace("'", "\"")
                 with open(file_name, "w") as f:
@@ -380,11 +380,11 @@ class GraphAlgo(GraphAlgoInterface):
         # plt.legend()
         plt.show()  # make graphics appear.
 
-    # def __str__(self) -> str:
-    #     return "\n|V|={} , |E|={}".format(len(self.get_graph().get_all_v()), self.graph.edgeCount)
-    #
-    # def __repr__(self) -> str:
-    #     return self.graph.__repr__()
+    def __str__(self) -> str:
+        return "\n|V|={} , |E|={}".format(len(self.get_graph().get_all_v()), self.graph.edgeCount)
+
+    def __repr__(self) -> str:
+        return self.graph.__repr__()
 
 
 if __name__ == '__main__':

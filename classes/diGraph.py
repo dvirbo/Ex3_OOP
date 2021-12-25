@@ -1,4 +1,4 @@
-from src.edge import Edge
+from classes.edge import Edge
 from src.Interfaces.GraphInterface import GraphInterface
 from node import Node
 
@@ -145,3 +145,9 @@ class DiGraph(GraphInterface):
             return self.getNode(id1).get_edge(id2)
         except KeyError:
             return None
+
+    def __str__(self):
+        return "\n|V|={} , |E|={}".format(len(self.nodes), self.edgeCount)
+
+    def __repr__(self) -> str:
+        return self.__repr__()
