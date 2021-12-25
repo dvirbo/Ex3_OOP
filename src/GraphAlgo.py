@@ -17,13 +17,21 @@ min_x = min_y = max_x = max_y = 0
 class GraphAlgo(GraphAlgoInterface):
     graph = None
     distances = None
+    connected = -1
 
-    def __init__(self):
-        self.graph = GraphInterface()
-
+    def _init_(self, directedGraph: DiGraph() = None) -> None:
+        """
+        this method inits the graph -> creates a new graph
+       :param directedGraph: the new graph
+       """
         # distances = {id1, {id2, [float ,List]}}
         self.distances = {}
         self.connected = -1
+
+        self.graph = DiGraph()
+        if directedGraph is not None:
+            if isinstance(directedGraph, DiGraph):
+                self.graph = directedGraph
 
     def get_graph(self) -> GraphInterface:
         return self.graph
@@ -59,7 +67,7 @@ class GraphAlgo(GraphAlgoInterface):
 
                 new_graph = DiGraph()
                 new_graph.set_graph(new_Nodes, counter)
-                self.graph = new_graph
+                self._init_(new_graph)
         except FileNotFoundError:
             flag = False
             raise FileNotFoundError
@@ -68,32 +76,29 @@ class GraphAlgo(GraphAlgoInterface):
 
     def save_to_json(self, file_name: str) -> bool:
         """
-                Saves the graph in JSON format to a file
-                :param file_name: The path to the out file
-                :return: True if the save was successful, False o.w.
-                """
+        Saves the graph in JSON format to a file
+        :param file_name: The path to the out file
+        :return: True if the save was successful, False o.w.
+        """
         flag = True
         data = {"Edges": [], "Nodes": []}
         try:
-            nodes = self.graph.get_all_v()
-            for fKey in nodes.keys():
-                pos = str(nodes.get(fKey).pos)
+            for fKey in self.graph.get_all_v().keys():
+                pos = str(self.graph.getNode(fKey).pos)
                 if pos is not None:
-                    pos = str(pos)
-                    pos = pos.replace("\'", "")
                     data["Nodes"].append({"pos": pos, "id": fKey})
                 else:
                     data["Nodes"].append({"id": fKey})
                 for sKey in self.graph.all_out_edges_of_node(fKey):
-                    weight = self.graph.all_out_edges_of_node(fKey).get(sKey)
+                    w = self.graph.all_out_edges_of_node(fKey).get(sKey)
+                    w = str(w)
+                    weight = w[-3:]
                     data["Edges"].append({"src": fKey, "w": weight, "dest": sKey})
-            finData = data.__str__()
-            finData = finData.replace(" ", "")
-            finData = finData.replace("'", "\"")
-            finData = finData.replace("(", "")
-            finData = finData.replace(")", "")
-            with open(file_name, "w") as outfile:
-                outfile.write(finData)
+                finData = data._str_()
+                # finData = finData.replace(" ", "")
+                finData = finData.replace("'", "\"")
+                with open(file_name, "w") as f:
+                    f.write(finData)
         except FileNotFoundError:
             flag = False
             raise FileNotFoundError
@@ -384,10 +389,9 @@ class GraphAlgo(GraphAlgoInterface):
 
 if __name__ == '__main__':
     g = GraphAlgo()
-    g.load_from_json("C:/Users/yuval/PycharmProjects/Ex3_OOP/data/T0.json")
+    g.load_from_json("C:/Users/yuval/PycharmProjects/Ex3_OOP/data/A0.json")
     print(g.shortest_path(0, 1))
     print(g.centerPoint())
-    listi = [1, 5, 2, 2, 8, 7, 8]
+    listi = [1, 2, 3]
     print(g.is_connected)
     print(g.TSP(listi))
-
