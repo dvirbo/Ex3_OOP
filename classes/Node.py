@@ -1,4 +1,6 @@
-from classes.edge import Edge
+from numpy import random
+
+from classes.Edge import Edge
 from classes.position import Position
 
 
@@ -17,7 +19,10 @@ class Node:
         if position is not None:
             self.pos = Position(position)
         else:
-            self.pos = position
+            x = random.uniform(0.0, 100)
+            y = random.uniform(0.0, 100)
+            p = Position((x, y, 0))
+            self.pos = p
 
     def get_key(self) -> int:
         return self.key
