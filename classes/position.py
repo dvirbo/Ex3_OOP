@@ -32,4 +32,3 @@ class Position(tuple):
         return math.sqrt(math.pow(self.x - dest.x, 2) + math.pow(self.y - dest.y) + math.pow(self.z - dest.z, 2))
 
 
-

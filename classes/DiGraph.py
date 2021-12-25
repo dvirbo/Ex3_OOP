@@ -1,14 +1,9 @@
 from Interfaces.GraphInterface import GraphInterface
-from classes.node import Node
+from classes.Edge import Edge
+from classes.Node import Node
 
 
 class DiGraph(GraphInterface):
-    """
-    this class represent graph that have:
-    * dictionary of nodes
-    * mcCount - mode count
-    * edgeCount - count the number of edges in the graph
-    """
 
     def __init__(self):
         self.nodes = {}
@@ -19,46 +14,40 @@ class DiGraph(GraphInterface):
         self.nodes = new_node
         self.edgeCount = edge_count
 
-    def v_size(self) -> int:
-        """
-        using len of the dict that contain all the nodes in the graph,
-        :return the number of nodes in the graph
-        """
-        return len(self.nodes)
+    def v_size(self):
+        try:
+            return len(self.nodes)
+        except NotImplementedError as e:
+            print(e)
 
     def e_size(self) -> int:
-        """
-        using edgeCount that we init in the constructor
-        :return number of the edges in the graph
-        """
-        return self.edgeCount
+        try:
+            return self.edgeCount
+        except NotImplementedError as e:
+            print(e)
 
     def get_all_v(self) -> dict:
-        """
-       :return a dictionary of all the nodes in the Graph, each node is represented using a pair
-         (node_id, node_data)
-        """
-        return self.nodes
+        try:
+            return self.nodes
+        except NotImplementedError as e:
+            print(e)
+
+    def set_all_v(self, nodes: dict):
+        self.nodes = nodes
 
     def all_in_edges_of_node(self, id1: int) -> dict:
-        """
-        :return  a dictionary of all the nodes connected to (into) node_id ,
-        each node is represented using a pair (other_node_id, weight)
-         """
-        return self.getNode(id1).inEdges
+        try:
+            return self.getNode(id1).inEdges
+        except NotImplementedError as e:
+            print(e)
 
     def all_out_edges_of_node(self, id1: int) -> dict:
-        """
-        :return  a dictionary of all the nodes connected from node_id , each node is represented using a pair
-        (other_node_id, weight)
-        """
-        return self.getNode(id1).outEdges
+        try:
+            return self.getNode(id1).outEdges
+        except NotImplementedError as e:
+            print(e)
 
     def get_mc(self) -> int:
-        """
-        on every change in the graph state - the MC should be increased
-        :return  the current version of this graph,
-        """
         return self.mcCount
 
     def __contains__(self, key):
@@ -82,8 +71,8 @@ class DiGraph(GraphInterface):
             if (self.__contains__(id1)) & (self.__contains__(id2)):  # check if there in the dict nodes
                 if (id1 not in self.all_in_edges_of_node(id2).keys()) & (
                         id2 not in self.all_out_edges_of_node(id1).keys()):
-                    self.nodes[id1].outEdges[id2] = weight
-                    self.nodes[id2].inEdges[id1] = weight
+                    self.nodes[id1].outEdges[id2] = Edge(id1, id2, weight)
+                    self.nodes[id2].inEdges[id1] = Edge(id2, id1, weight)
                     self.mcCount += 1
                     self.edgeCount += 1
                     return True
@@ -91,12 +80,12 @@ class DiGraph(GraphInterface):
 
     def add_node(self, node_id: int, pos: tuple = None) -> bool:
         """
-        Adds a node to the graph.
-        :param node_id: The node ID
-        :param pos: The position of the node
-        :return: True if the node was added successfully, False o.w.
-        Note: if the node id already exists the node will not be added
-        """
+                Adds a node to the graph.
+                :param node_id: The node ID
+                :param pos: The position of the node
+                :return: True if the node was added successfully, False o.w.
+                Note: if the node id already exists the node will not be added
+                """
         if node_id in self.nodes.keys():  # if the node id already exists
             return False
         n = Node(node_id, pos)
@@ -150,6 +139,12 @@ class DiGraph(GraphInterface):
             self.edgeCount -= 1
             return True
         return False
+
+    def get_edge(self, id1: int, id2: int):
+        try:
+            return self.getNode(id1).get_edge(id2)
+        except KeyError:
+            return None
 
     def __str__(self):
         return "\n|V|={} , |E|={}".format(len(self.nodes), self.edgeCount)
