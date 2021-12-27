@@ -67,7 +67,7 @@ class Node:
         self.outEdges = new_outEdges
 
     def __str__(self) -> str:
-        return f"id: {self.key}, pos: {self.pos}"
+        return f"{self.key}: |edge_out| {len(self.outEdges)} |edge_in| {len(self.inEdges.keys())}"
 
     def __repr__(self) -> str:
-        return f"id: {self.key}, pos: {self.pos}"
+        return f"{self.key}: |edge_out| {len(self.outEdges)} |edge_in| {len(self.inEdges.keys())}"

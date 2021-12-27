@@ -147,7 +147,7 @@ class DiGraph(GraphInterface):
             return None
 
     def __str__(self):
-        return "\n|V|={} , |E|={}".format(len(self.nodes), self.edgeCount)
+        return "\nGraph: |V|={}, |E|={}".format(len(self.nodes), self.edgeCount)
 
     def __repr__(self) -> str:
-        return "\n|V|={} , |E|={}".format(len(self.nodes), self.edgeCount)
+        return "\nGraph: |V|={}, |E|={}".format(len(self.nodes), self.edgeCount)
