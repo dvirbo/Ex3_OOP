@@ -9,7 +9,7 @@ class Edge:
         self.weight = weight
 
     def __str__(self) -> str:
-        return f"src: {self.src}, dest: {self.dest}, w: {self.weight}"
+        return f"{self.weight}"
 
     def __repr__(self) -> str:
-        return f"src: {self.src}, dest: {self.dest}, w: {self.weight}"
+        return f"{self.weight}"

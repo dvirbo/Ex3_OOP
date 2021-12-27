@@ -99,7 +99,6 @@ class GraphAlgo(GraphAlgoInterface):
                     fw = float(var)
                     data["Edges"].append({"src": fKey, "w": fw, "dest": sKey})
                 finData = data.__str__()
-                # finData = finData.replace(" ", "")
                 finData = finData.replace("'", "\"")
                 with open(file_name, "w") as f:
                     f.write(finData)
