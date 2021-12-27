@@ -131,7 +131,7 @@ class GraphAlgo(GraphAlgoInterface):
         for current_key in nodes:
             nodes.get(current_key).set_tag(0)
 
-            # id1 is already define in src_distances (line 116)
+            # id1 is already define in src_distances (line 132) -> src_distances[id1] = [0, None]
             if current_key != id1:
                 if self.distances is not None \
                         and self.distances.get(id1) is not None \
