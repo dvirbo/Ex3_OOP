@@ -225,6 +225,7 @@ class GraphAlgo(GraphAlgoInterface):
         # dist_ans -> overall distance
         dist_ans = 0
 
+        b = False
         # while node_lst is not empty
         while node_lst:
 
@@ -242,6 +243,7 @@ class GraphAlgo(GraphAlgoInterface):
                     tempSPD = self.shortest_path(startNode, next_node_key)[0]
 
                 if tempSPD < cost:
+                    b = True
                     cost = tempSPD
                     tempPath = self.distances.get(startNode).get(next_node_key)[1]
                     dist_ans += self.distances.get(startNode).get(next_node_key)[0]
@@ -251,6 +253,11 @@ class GraphAlgo(GraphAlgoInterface):
             #  if there's no path
             if not tempPath:
                 return -1, float('inf')
+
+            if not b:
+                return -1, float('inf')
+
+            b = False
 
             cost = sys.float_info.max
             index = node_lst.index(currentNode)
@@ -274,8 +281,9 @@ class GraphAlgo(GraphAlgoInterface):
             return None
         if node_size == 1:
             return self.graph.get_all_v().keys(), None
-        if self.connected == -1:
-            if not self.is_connected:
+        if self.connected == -1:  # if the graph is not connected -> there's no center point
+            b = self.is_connected()
+            if not b:
                 return -1, float('inf')
         elif self.connected == 0:
             return -1, float('inf')
@@ -390,6 +398,3 @@ class GraphAlgo(GraphAlgoInterface):
 
     def __repr__(self) -> str:
         return self.graph.__repr__()
-
-
-
