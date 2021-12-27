@@ -12,8 +12,6 @@ The theme of the project is  Design and implementation of directed and weighted 
  methods of the interface:
 - create a graph (it's optional to add vertexes and edges)
 - init: Init the graph on which this set of algorithms operates on
-- copy: Compute a deep copy of a weighted graph.
-- Isconected: check if the graph is strongly connected (there is a valid path from each node to each other node).
 - shortestPath: returns list of nodes of the shortest path between source vertex to destination vertex consider the weight of each edge.
 - centerPoint: Finds the node which minimizes the max distance to all the other nodes.
 - tsp: Computes a list of consecutive nodes which go over all the nodes in cities.
@@ -24,7 +22,7 @@ The theme of the project is  Design and implementation of directed and weighted 
  algorithms that we buit to help us implements the methods of the intreface:
  - lowest_dist: calculate the lowest dist between two given nodes.
  - Dijkstra_algorithm_path: Find the shortest route for any pair node,
- - is_connected:check if the given grapg is strongly connected
+ - Isconected: check if the graph is strongly connected (there is a valid path from each node to each other node).
  - DFS:Depth-first search
   
    
