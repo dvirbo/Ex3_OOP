@@ -99,7 +99,6 @@ class GraphAlgo(GraphAlgoInterface):
                     fw = float(var)
                     data["Edges"].append({"src": fKey, "w": fw, "dest": sKey})
                 finData = data.__str__()
-                # finData = finData.replace(" ", "")
                 finData = finData.replace("'", "\"")
                 with open(file_name, "w") as f:
                     f.write(finData)
@@ -355,8 +354,6 @@ class GraphAlgo(GraphAlgoInterface):
             nd = self.graph.get_all_v().get(i)
             if nd.tag == 0:
                 self.DFS(nd)
-
-        n.set_tag(2)
 
     def plot_graph(self) -> None:
         """

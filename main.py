@@ -24,8 +24,8 @@ def check():
     """
 
     check0()
-    check1()
-    check2()
+    # check1()
+    # check2()
 
 
 def check0():

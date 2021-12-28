@@ -1,5 +1,4 @@
 import unittest
-import sys
 
 from classes.DiGraph import DiGraph
 from classes.GraphAlgo import GraphAlgo
@@ -222,8 +221,6 @@ class TestGraphAlgo(unittest.TestCase):
         g2.graph.add_edge(9, 8, 1.4575484853801393)
 
         self.assertFalse(g2.is_connected())
-
-    # def test_plot_graph(self):
 
 
 if __name__ == '__main__':
