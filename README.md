@@ -30,9 +30,18 @@ The theme of the project is  Design and implementation of directed and weighted 
 
 
 
-## Running Tests
 
-To run tests, run the following command
+## Tests:
+ using unittest we check the two classes that implement TestCase:
+* TestDiGraph: check all the methods that given in GraphInterface to see the accuracy of the code.
+ * TestGraphAlgo: check all the methods that given in GraphAlgoInterface to see the accuracy of the code
+
+
+
+
+  
+
+
 
 
 
