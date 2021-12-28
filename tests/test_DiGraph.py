@@ -1,7 +1,7 @@
 import unittest
 from unittest import TestCase
 
-from classes.DiGraph import DiGraph
+from DiGraph import DiGraph
 
 
 class TestDiGraph(TestCase):

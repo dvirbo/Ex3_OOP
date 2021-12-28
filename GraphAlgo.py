@@ -6,7 +6,7 @@ from numpy import random
 
 from Interfaces.GraphAlgoInterface import GraphAlgoInterface
 from Interfaces.GraphInterface import GraphInterface
-from classes.DiGraph import DiGraph
+from DiGraph import DiGraph
 from classes.Edge import Edge
 from classes.Node import Node
 from classes.position import Position
@@ -349,11 +349,10 @@ class GraphAlgo(GraphAlgoInterface):
         :return: void, setting node's tag to 1 when reached to
         """
         n.set_tag(1)
-
         for i in self.graph.all_out_edges_of_node(n.key):
-            nd = self.graph.get_all_v().get(i)
-            if nd.tag == 0:
-                self.DFS(nd)
+             nd = self.graph.get_all_v().get(i)
+             if nd.tag == 0:
+                 self.DFS(nd)
 
     def plot_graph(self) -> None:
         """
