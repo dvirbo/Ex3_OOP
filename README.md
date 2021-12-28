@@ -37,7 +37,15 @@ To run tests, run the following command
 
 
 
-## Usage/Examples
+
+
+## Download and run The Project:
+ to run the project, install the above packages:
+
+    pandas Version 1.3.4 (or higher), matplotlib Version 3.4.3 (or higher).
+Download the project and export it by the above actions:
+
+    Click Code (Green Button) ->  Download ZIP -> Choose Extract to Folder in Zip -> Run: Main.py
 
 
 
